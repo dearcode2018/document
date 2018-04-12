@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/mvc		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/context	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	"
+	default-lazy-init="true">
+	
+	<!-- 扫描注册，多个基本包 可以用逗号隔开 -->
+	<context:component-scan base-package="com.hua.service">
+	</context:component-scan>	
+
+	<!-- -
+	注解映射 驱动，使用spring内置的json转换
+	配合使用@ResponseBody注解，可以将java对象转成json格式数据
+	 jquery ajax 框架将拿到的json格式数据自动转成js对象
+	 该配置自动注册 DefaultAnnotationHandlerMapping 和 AnnotationMethodHandlerAdapter 2个bean，
+	 是Spring MVC 为@Controller分发请求所必须的，并提供了数据绑定:
+	 @NumberFormat @DateTimeFormat @Valid ...
+	 不推荐使用这种方式，应该通过bean方式进行详细的控制
+	 -->
+	<mvc:annotation-driven />
+
+	<!-- 基于注解的映射，可以取代 mvc:annotation-driven -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="interceptors">
+			<!-- 直接精确注入拦截器，restfull风格的url不会被拦截 -->
+			<list>
+				<!-- 直接指定某个拦截器 -->
+				<bean></bean>
+			</list>
+		</property>
+	</bean>
+  	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"></bean>
+  	
+	<!-- 扫描控制器 (必须放在此文件中) -->
+	<context:component-scan base-package="com.hua.controller">
+	</context:component-scan>
+
+	<!-- 视图解析 -->
+
+	<!-- 拦截器 -->
+
+	<!-- 对静态资源文件的访问 (方案1 二选一)
+	使用默认的Servlet来响应静态文件
+	该配置使用的是DefaultServletHttpRequestHandler，使用的就是各个servlet容器自己默认的Servlet.
+	 -->
+	<mvc:default-servlet-handler />
+	
+	<!-- 对静态资源文件的访问 (方案2 二选一) 
+	由spring读入内存，再响应http
+	spring会先执行order 值较小的.
+	-->
+ 	<mvc:resources location="/image/**" mapping="/image/" cache-period="31556926" order="1" />
+	<mvc:resources location="/js/**" mapping="/js/" cache-period="31556926" />
+	<mvc:resources location="/css/**" mapping="/css/" cache-period="31556926" />
+
+	<!-- 对静态资源文件的访问 (方案3 ) 
+	在 web.xml中使用 servlet容器的默认servlet，配置在dispathcerServlet前面，
+	这样请求就不会进入Spring，tomcat/jboss/jetty/glassfish 自带的默认Servlet名称是 default
+		<servlet-mapping>   
+		    <servlet-name>default</servlet-name>  
+		    <url-pattern>*.jpg</url-pattern>     
+		</servlet-mapping>    
+		<servlet-mapping>       
+		    <servlet-name>default</servlet-name>    
+		    <url-pattern>*.js</url-pattern>    
+		</servlet-mapping>    
+		<servlet-mapping>        
+		    <servlet-name>default</servlet-name>       
+		    <url-pattern>*.css</url-pattern>      
+		</servlet-mapping>    
+		要配置多个，每种文件配置一个  	
+	-->
+	
+	<!-- 如果不使用restfull 风格的url，而是使用 xx.do xx.action 这样的后缀，专门针对特定的后缀进行拦截，则不存在这个问题 -->
+	
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<!-- 若不配置映射路径，则拦截所有，类似于总拦截 -->
+		<!-- 如果是restfull风格的url，静态资源也会被拦截 -->
+		<mvc:interceptor>
+			<!-- 包含映射路径 -->
+			<mvc:mapping path=""/>
+			<!-- 排除映射路径 -->
+			<mvc:exclude-mapping path=""/>
+			<!-- 拦截器bean，实现 HandlerInterceptor 接口 -->
+			<bean></bean>
+			<!-- 引用外部拦截器bean -->
+			<ref bean=""/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<!-- 总异常处理: 映射异常处理，也可以实现 HandlerExceptionResolver 接口，自定义异常处理 -->
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<!-- 默认错误视图 -->
+		<property name="defaultErrorView">
+			<value>/error/error</value>		
+		</property>
+		<!--  -->
+		<property name="defaultStatusCode">
+			<value>500</value>
+		</property>
+		<!-- 警告日志目录 -->
+		<property name="warnLogCategory">
+			<!-- 已该类全限定名 作为警告日志目录 -->
+			<value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver</value>  
+		</property>
+	</bean>
+	
+</beans>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	   default-lazy-init="false" 
+	   default-autowire="byName">
+	   
+<!-- Spring MVC 公共配置 -->
+<context:annotation-config/>
+
+<!-- Bind the return value of the Rest service to the ResponseBody. org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter-->
+<bean class ="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" >
+	<property name="synchronizeOnSession" value="true"/>
+	<property name="messageConverters">
+		<list>
+			<ref bean="xmlMessageConverter" /> <!-- xml转换器 -->
+			<!-- json转换器 -->
+			<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+                   <property name="supportedMediaTypes">  
+                       <list>  
+                           <value>text/plain;charset=UTF-8</value>  
+                           <value>application/json;charset=UTF-8</value>  
+                       </list>  
+                   </property>  
+                   <property name="objectMapper">  
+                       <bean class="com.xyt.ocr.mvc.converter.JsonObjectMapper"></bean>  
+                   </property> 
+			</bean>
+			<ref bean="stringHttpMessageConverter" />
+		</list>
+	</property>
+    <property name="customArgumentResolver">
+    	<bean class="com.xyt.ocr.mvc.resolver.ParameterResolver"/>
+    </property>
+</bean>
+
+<!-- Define the OXM marshaller which is used to convert the Objects from/to XML. -->
+<bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+      <property name="streamDriver" >
+             <bean class="com.thoughtworks.xstream.io.xml.DomDriver"/>
+          </property>
+	  <property name="autodetectAnnotations" ><value>true</value></property>
+</bean>
+
+<bean id="xmlMessageConverter" class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+	<constructor-arg ref="xstreamMarshaller" />
+</bean>
+
+<!-- 通过替换StringHttpMessageConverter class 解决乱码，将DEFAULT_CHARSET = Charset.forName("UTF-8");设置成utf-8 -->
+<bean id="stringHttpMessageConverter" class = "org.springframework.http.converter.StringHttpMessageConverter">
+   <property name ="supportedMediaTypes">
+      <list>
+          <value>text/plain;charset=UTF-8</value>
+          <value>text/html;charset=UTF-8</value>
+      </list>
+    </property>
+    <!-- 这句配置使得返回的内容头文件不会有一大串AcceptCharset -->
+    <property name="writeAcceptCharset" value="false"/>
+</bean>
+
+<!-- 根据客户端的不同的请求决定不同的view进行响应, 如 /blog/1.json /blog/1.xml -->
+<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+	<!-- 设置为true以忽略对Accept Header的支持-->
+  	<property name="ignoreAcceptHeader" value="false"/>
+  	<!-- 在没有扩展名时即: "/user/1" 时的默认展现形式 -->
+	<property name="defaultContentType" value="text/html"/>
+  	<!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+	<property name="mediaTypes">
+		<map>
+			<entry key="html" value="text/html" />
+			<entry key="json" value="application/json" />
+			<entry key="xml" value="application/xml" />
+		</map>
+	</property>
+	<!-- 用于开启 /userinfo/123?format=json 的支持 -->
+	<property name="favorParameter" value="false"/>
+	<property name="viewResolvers">
+		<list>
+			<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+	    	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	        	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+	        	<property name="prefix" value="/WEB-INF/jsp"/>
+	        	<property name="suffix" value=".jsp"></property>
+	    	</bean>
+		</list>
+	</property>
+</bean>
+
+<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+<!-- Mapping exception to the handler view  org.springframework.web.servlet.handler.SimpleMappingExceptionResolver -->
+<bean id="exceptionResolver" class="com.xyt.ocr.mvc.resolver.GsmExceptionResolver">
+    <property name="exceptionMappings">
+        <props>
+          	<prop key="java.lang.exception">/error/500.jsp</prop>
+        </props>
+    </property>
+</bean>
+ 
+<mvc:interceptors>
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />		
+	<mvc:interceptor>
+		<!-- 系统拦截器 -->
+		<mvc:mapping path="/**" />
+		<bean class="com.xyt.ocr.mvc.interceptor.ControllerInterceptor">
+			<!-- 当传统非AJAX请求时返回页面地址  无登录或会话过期-->
+			<property name="noSession" value="/"/>
+			<!-- 当传统非AJAX请求时返回页面地址  无权限-->
+			<property name="noPermission" value="/"/>
+			<!-- 拦截例外-->
+			<property name="notCheckURISet">
+				<list>   
+				    <value>/front/</value>
+				    <value>/data/</value>
+				    <value>/fs/</value>
+				    <value>/pcOcr/</value>
+				    <value>/error/</value>
+				    <value>/api/out/</value>
+				</list>
+			</property> 
+		</bean>			
+	</mvc:interceptor>	
+	
+	<mvc:interceptor>
+		<!-- 外部系统拦截器 -->
+		<mvc:mapping path="/api/out/**" />
+		<bean class="com.xyt.ocr.mvc.interceptor.OutApiControllerInterceptor"/>		
+	</mvc:interceptor>			
+</mvc:interceptors>
+
+</beans>

@@ -1,0 +1,50 @@
+【项目信息】
+项目名称 : spring-mvc
+中文名称 : Spring MVC
+项目版本 : version 1.0
+
+主要技术 : 
+
+项目描述 : 
+
+项目备注 : 
+
+【项目规划】
+
+1)
+/* 访问 swagger首页 */
+http://localhost:8080/swagger/swagger-ui.html
+2)
+
+3)
+
+4)
+
+5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

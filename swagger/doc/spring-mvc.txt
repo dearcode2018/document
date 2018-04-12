@@ -1,0 +1,70 @@
+
+1) 前置控制器
+DispatcherServlet 是一个Servlet，可以配置多个，每个DispatcherServlet都有自己的
+上下文对象(WebApplicationContext)，称为子上下文(子容器)，子上下文可以访问父
+上下文的内容，但父上下文不能访问子上下文中的内容，ApplicationContext中只提供了
+getParent()，而没有getChildren()的方法.
+子上下文也保存在ServletContext中，key是DispatcherServlet.class.getName() + ".CONTEXT"，
+当一个Request对象产生时，会把这个子上下文对象(WebApplicationContext)以这个key保存在request对象中.
+可以通过RequestContextUtils.getWebApplicationContext(ServletRequest) 获取子上下文对象
+
+请求处理: 
+HandlerMapping接口，处理请求的映射
+实现类: 
+A.SimpleUrlHandlerMapping 通过配置文件，把一个url映射到控制器上.
+B.DefaultAnnotationHandlerMapping 通过注解，把一个url映射到控制器上.
+
+HandlerAdapter接口: 处理请求的映射
+实现类:
+A. 
+B.AnnotationMethodHandlerAdapter 通过注解，把url映射到控制器的方法上.
+
+
+2) 拦截器
+HandlerInterceptor接口，可以实现该接口来定义拦截器
+
+3) 视图渲染
+ViewResolver 接口
+实现类: 
+A.UrlBasedViewResolver 通过配置文件，把一个视图名交给一个View来处理
+B.InternalResourceViewResolver 比上面的类添加了JSTL支持.
+
+
+
+4) 父子上下文 (WebApplicationContext)
+<listener>   
+  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>   
+</listener> 
+Spring 会创建一个WebApplicationContext上下文，称为父上下文(父容器)，保存在ServletContext中，
+key是WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE
+可以通过spring工具类WebApplicationContextUtils.getWebAplication(ServletContext)
+
+
+方案1: 传统型
+父上下文容器中保存数据源、服务层，dao层，事务的bean.
+子上下文容器中保存着mvc相关的action的bean.
+事务控制在服务层.
+
+方案2: 激进型
+没有接口、没有service层、没有众多的po/vo/bo，没有service层，事务只好上层到action层，
+由于spring有父、子上下文，因此无法直接直接实现事务控制，解决方法: 只使用子容器，不使用父容器，
+数据源、服务层、事务的bean、action的bean都放在子上下文容器，就可以实现了.
+
+
+Java--大项目能做好--按传统方式做，规规矩矩的做，好扩展，好维护。
+
+Java--小项目能做快--按激进方式做，一周时间就可以出一个版本，先上线接受市场(用户)的反馈，再改进，再反馈，时间就是生命(成本)。
+
+@Controller 声明Action组件
+@Service    声明Service组件    @Service("myMovieLister")
+@Repository 声明Dao组件
+@Component   泛指组件, 当不好归类时.
+@RequestMapping("/menu")  请求映射
+@Resource  用于注入，( j2ee提供的 ) 默认按名称装配，@Resource(name="beanName")
+@Autowired 用于注入，(srping提供的) 默认按类型装配
+@Transactional( rollbackFor={Exception.class}) 事务管理
+@ResponseBody
+@Scope("prototype")   设定bean的作用域
+@RequestParam
+
+Spring MVC没有总的拦截器，拦截器总是针对某匹配url进行处理.

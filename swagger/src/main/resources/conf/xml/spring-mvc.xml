@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/mvc		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/context	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	"
+	default-lazy-init="true">
+	
+	<!-- 扫描注册，多个基本包 可以用逗号隔开 -->
+	<context:component-scan base-package="com.hua.service">
+	</context:component-scan>	
+
+	<!-- -
+	注解映射 驱动，使用spring内置的json转换
+	配合使用@ResponseBody注解，可以将java对象转成json格式数据
+	 jquery ajax 框架将拿到的json格式数据自动转成js对象
+	 该配置自动注册 DefaultAnnotationHandlerMapping 和 AnnotationMethodHandlerAdapter 2个bean，
+	 是Spring MVC 为@Controller分发请求所必须的，并提供了数据绑定:
+	 @NumberFormat @DateTimeFormat @Valid ...
+	 -->
+	<mvc:annotation-driven />
+
+	<!-- 扫描控制器 (必须放在此文件中) -->
+	<context:component-scan base-package="com.hua.controller">
+	</context:component-scan>
+
+	<!-- 视图解析 -->
+
+	<!--  swagger 配置 start -->
+    <bean class="com.hua.swagger.SwaggerConfig" />
+	<!--  swagger 配置 end -->
+
+
+
+	<!-- 拦截器 -->
+	
+<!-- 	<mvc:default-servlet-handler /> -->
+	
+	<!-- 对静态资源文件的访问 (方案2 二选一) 注意 mapping路径值要写成配对方式，本地路径值直接写 -->
+	<mvc:resources location="/views/" mapping="/views/**" cache-period="31556926" />
+	<mvc:resources location="/image/" mapping="/image/**" cache-period="31556926" />
+	<mvc:resources location="/js/" mapping="/js/**" cache-period="31556926" />
+	<mvc:resources location="/css/" mapping="/css/**" cache-period="31556926" />
+	<mvc:resources location="/webjars/" mapping="/webjars/**" cache-period="31556926" />
+
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<!-- 若不配置映射路径，则拦截所有，类似于总拦截 -->
+		<!-- 如果是restfull风格的url，静态资源也会被拦截 -->
+		<mvc:interceptor>
+			<!-- 包含映射路径 -->
+			<mvc:mapping path="/**"/>
+			<!-- 将 mvc:resources 设定的资源映射路径排除在外 -->
+			<mvc:exclude-mapping path="/views/**"/>
+			<mvc:exclude-mapping path="/image/**"/>
+			<mvc:exclude-mapping path="/js/**"/>
+			<mvc:exclude-mapping path="/css/**"/>
+			<!-- 拦截器bean，实现 HandlerInterceptor 接口 -->
+			<bean class="com.hua.interceptor.SystemHandlerInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+</beans>
