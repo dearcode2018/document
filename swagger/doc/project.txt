@@ -1,6 +1,6 @@
 【项目信息】
-项目名称 : spring-mvc
-中文名称 : Spring MVC
+项目名称 : swagger
+中文名称 : swagger
 项目版本 : version 1.0
 
 主要技术 : 

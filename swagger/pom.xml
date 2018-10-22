@@ -9,9 +9,10 @@
 	<artifactId>swagger</artifactId>
 	<packaging>war</packaging>
 	<name>swagger</name>
+	
 	<properties>
+		<webVersion>3.0</webVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
 		<document.version>0.0.1</document.version>
 		<web.version>0.0.1</web.version>		
 		<xstream.version>1.4.8</xstream.version>		
@@ -19,7 +20,7 @@
 		<javax.transaction.jta.version>1.1</javax.transaction.jta.version>		
 		
 		<!-- spring -->
-		<spring.version>5.0.2.RELEASE</spring.version>
+		<spring.version>5.1.1.RELEASE</spring.version>
 		<spring.dao.version>2.0.8</spring.dao.version>
 		<spring.asm.version>3.1.4.RELEASE</spring.asm.version>
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
@@ -27,17 +28,21 @@
 		<spring.ws.version>2.2.0.RELEASE</spring.ws.version>
 		<spring.xml.version>2.2.0.RELEASE</spring.xml.version>
 		<spring.hibernate.version>1.2.9</spring.hibernate.version>				
-		<spring.hibernate3.version>2.0.8</spring.hibernate3.version>			
-		<swagger.version>2.5.0</swagger.version>								
+		<spring.hibernate3.version>2.0.8</spring.hibernate3.version>
+		<!-- swagger 其他版本 2.8 .2.9均尝试过，在tomcat中无法正常启动，
+		报 n: invalid LOC header (bad signature) 异常. 
+		怀疑是下载的jar包不正常，导致无法使用.
+		具体原因未明，暂时使用 2.7版本 -->			
+		<swagger.version>2.7.0</swagger.version>								
 	</properties>
 
 	<!-- war构建 -->
-	<build>
+<!-- 	<build>
 		<finalName>swagger</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
+				<artifactId>tomcat8-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
 					<port>8081</port>
@@ -45,7 +50,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>
+	</build> -->
 	<dependencies>
 		<dependency>
 			<groupId>com.hua</groupId>
@@ -294,8 +299,5 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>	
-	
-	
-		
 	</dependencies>
 </project>

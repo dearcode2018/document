@@ -19,7 +19,7 @@
 			classpath:conf/xml/spring-config.xml,
 			classpath:conf/xml/spring-service.xml,
 			classpath:conf/xml/spring-jee.xml,
-			classpath:conf/xml/spring-mvc.xml
+			classpath:conf/xml/spring-swagger.xml
 		</param-value>
 		<!-- <param-value>classpath:conf/xml/*.xml</param-value> -->
 	</context-param>	
@@ -68,7 +68,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:conf/xml/spring-mvc.xml</param-value>
+			<param-value>classpath:conf/xml/spring-swagger.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

@@ -7,6 +7,7 @@
 package com.hua.service.sys;
 
 import com.hua.bean.ResultBean;
+import com.hua.entity.SimpleUser;
 import com.hua.entity.User;
 import com.hua.service.CoreService;
 
@@ -25,4 +26,13 @@ public interface UserService extends CoreService
 	 * @author qye.zheng
 	 */
 	public ResultBean login(final User user);
+	
+	/**
+	 * 
+	 * @description 
+	 * @param user
+	 * @return
+	 * @author qianye.zheng
+	 */
+	public ResultBean login(final SimpleUser user);
 }

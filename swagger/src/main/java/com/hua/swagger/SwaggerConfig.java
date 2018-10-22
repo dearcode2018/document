@@ -19,8 +19,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @description Swagger配置
  * @author qianye.zheng
  */
-@EnableWebMvc
 @Configuration
+@EnableWebMvc
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer
 {
@@ -37,7 +37,7 @@ public class SwaggerConfig implements WebMvcConfigurer
 	 */
      @Override
      public void addResourceHandlers(ResourceHandlerRegistry registry) {
-         registry.addResourceHandler("swagger-ui.html")
+        registry.addResourceHandler("swagger-ui.html")
          .addResourceLocations("classpath:/META-INF/resources/");
          registry.addResourceHandler("/webjars*")
          .addResourceLocations("classpath:/META-INF/resources/webjars/");
@@ -61,13 +61,16 @@ public class SwaggerConfig implements WebMvcConfigurer
      * @author qianye.zheng
      */
     private ApiInfo apiInfo() {
-        Contact contact = new Contact("作者dd", 
-                                      "aaa",
-                                      "邮箱是xxx");
+    	// 联系人信息
+        Contact contact = new Contact("作者名称xx",  "主页链接xx", "邮箱xxx");
+        
         return new ApiInfoBuilder()
-                .title("XXAPI接口")
-                .description("提供给前端访问的API接口")
+        		// 标题
+                .title("文档标题-XXAPI接口")
+                // 描述
+                .description("文档描述-提供给前端访问的API接口")
                 .contact(contact)
+                // 版本信息
                 .version("0.1.0")
                 .build();
     }
