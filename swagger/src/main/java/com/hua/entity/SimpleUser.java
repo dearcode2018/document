@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author qye.zheng
  * SimpleUser
  */
-@ApiModel("简单用户")
+//@ApiModel("简单用户")
 public final class SimpleUser extends BaseBean {
 
 	 /* long */

@@ -10,10 +10,14 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -55,9 +59,42 @@ public class SwaggerConfig implements WebMvcConfigurer
       */
     @Bean
     public Docket customDocket() {
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).securitySchemes(securitySchemas());
+        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
+        		.securitySchemes(securitySchemas()).securityContexts(securityContexts());
     }
 
+    /**
+     * 
+     * @description 
+     * @return
+     * @author qianye.zheng
+     */
+	private List<SecurityContext> securityContexts()
+	{
+		List<SecurityContext> list = new ArrayList<SecurityContext>();
+		list.add(SecurityContext.builder().securityReferences(defaultAuth())
+				.forPaths(PathSelectors.regex("^(?!auth).*$")).build());
+		
+		return list;
+	}
+
+	/**
+	 * 
+	 * @description 
+	 * @return
+	 * @author qianye.zheng
+	 */
+	List<SecurityReference> defaultAuth()
+	{
+		AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+		AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+		authorizationScopes[0] = authorizationScope;
+		List<SecurityReference> list =  new ArrayList<SecurityReference>();
+		list.add(new SecurityReference("Authorization", authorizationScopes));
+		
+		return list;
+	}
+	
     /**
      * 
      * @description 
@@ -67,7 +104,10 @@ public class SwaggerConfig implements WebMvcConfigurer
     private List<ApiKey> securitySchemas()
     {
     	List<ApiKey> apiKeys = new ArrayList<ApiKey>();
-    	apiKeys.add(new ApiKey("Authorization", "Authorization", "header"));
+    	String name = "AuthName";
+    	String keyname = "Authorization";
+    	String passAs = "123456";
+    	apiKeys.add(new ApiKey(name, keyname, passAs));
     	
     	return apiKeys;
     }

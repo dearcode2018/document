@@ -32,6 +32,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.Contact;
 import io.swagger.annotations.Example;
@@ -41,6 +43,8 @@ import io.swagger.annotations.ExtensionProperty;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.ResponseHeader;
 import io.swagger.annotations.SwaggerDefinition;
+import springfox.documentation.annotations.Cacheable;
+import springfox.documentation.annotations.Incubating;
 
  /**
  * @type SwaggerController
@@ -52,6 +56,8 @@ import io.swagger.annotations.SwaggerDefinition;
 @Api(value = "/api/sys", tags = {"Controller标签"})
 // @ApiIgnore 表示忽略该类，不生成文档
 //@ApiIgnore
+@Incubating("1.0")
+@Cacheable("xxxdd")
 @SwaggerDefinition(info = 
 @Info(title = "标题", version = "版本", contact = 
 @Contact(name = "qianye.zheng", email = "xx@qq.com", url = "主页")))
@@ -166,7 +172,7 @@ public class SwaggerController extends BaseController
 	            // 响应数据类型 (输出，生产去输出)
 	            //	produces = "application/json, application/xml",
 	            produces = "application/json",
-	            protocols = "http, https, ws",  authorizations = {@Authorization(value = "xx")},
+	            protocols = "http, https, ws",  authorizations = {@Authorization(value = "AuthName")},
 	            hidden = false, responseHeaders = {@ResponseHeader(name = "响应头xx")}, code = 300, 
 	            extensions = {@Extension(name = "h1", properties = {@ExtensionProperty(name = "1", value = "2")})}
 			 )
@@ -323,6 +329,69 @@ public class SwaggerController extends BaseController
 		
 		return new ResultBean();
 	}	
+	 
+	 /**
+	  * 
+	  * @description 
+	  * @param request
+	  * @param response
+	  * @param user
+	  * @return
+	  * @author qianye.zheng
+	  */
+	 @ApiOperation(value = "登录接口V35(@ApiResponse)", notes = "GET方式接收x-www-form-urlencoded参数",
+	            tags = {"GET方法"})
+	 @ApiImplicitParams({
+		 @ApiImplicitParam(paramType = "query", name = "username", 
+			 	dataType = "string", required = true ,defaultValue = "lisi"),
+		 @ApiImplicitParam(paramType = "header", name = "someKey", 
+		 	dataType = "string", required = true ,defaultValue = "key111")
+	 })
+	 @ApiResponses({@ApiResponse(code = 300, message = "错误消息xx", 
+	 responseHeaders = {@ResponseHeader(name = "header1", description = "头部1描述")}
+	 , responseContainer = "Map", response = ResultBean.class)})
+	 // 在路径中的值，也可以通过@RequestParam获取
+	@RequestMapping(value = "loginV35/{code}", method = RequestMethod.GET)
+	@ResponseBody
+	public final ResultBean loginV35(final HttpServletRequest request, 
+			final HttpServletResponse response,  
+			final @RequestParam("code") String code
+			)
+	{
+		log.info("login =====> enter ..." + code);
+		
+		return new ResultBean();
+	}	
+	 
+	 /**
+	  * 
+	  * @description 
+	  * @param request
+	  * @param response
+	  * @param user
+	  * @return
+	  * @author qianye.zheng
+	  */
+	 @ApiOperation(value = "登录接口V36(@ApiParam)", 
+			 response = SimpleUser.class,
+			 notes = "GET方式接收x-www-form-urlencoded参数",
+	         tags = {"GET方法"})
+	 @ApiParam(name = "vo", example = "id=123&username=zhangsan")
+	@RequestMapping(value = "loginV36/{code}", method = RequestMethod.GET)
+	@ResponseBody
+	public final ResultBean loginV36(final HttpServletRequest request, 
+			final HttpServletResponse response,  
+			final SimpleUser vo
+			)
+	{
+		 ResultBean resultBean = new ResultBean();
+		 SimpleUser user = new SimpleUser();
+		 user.setNickname("zhangsan");
+		 user.setPassword("xxxx");
+		 resultBean.setData(user);
+		 
+		return resultBean;
+	}
 	 
 	 /**
 	  * 
