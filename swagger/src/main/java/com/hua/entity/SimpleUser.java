@@ -25,7 +25,7 @@ public final class SimpleUser extends BaseBean {
 	private static final long serialVersionUID = 1L;
 	
 	/* 登录-用户名 (唯一) */
-	@ApiModelProperty(value = "登录-用户名 (唯一)", required = true)
+	//@ApiModelProperty(value = "登录-用户名 (唯一)", required = true)
 	private String username;
 	
 	/* 昵称 (用于显示) */

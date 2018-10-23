@@ -33,11 +33,14 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
+import io.swagger.annotations.Contact;
 import io.swagger.annotations.Example;
 import io.swagger.annotations.ExampleProperty;
 import io.swagger.annotations.Extension;
 import io.swagger.annotations.ExtensionProperty;
+import io.swagger.annotations.Info;
 import io.swagger.annotations.ResponseHeader;
+import io.swagger.annotations.SwaggerDefinition;
 
  /**
  * @type SwaggerController
@@ -49,9 +52,12 @@ import io.swagger.annotations.ResponseHeader;
 @Api(value = "/api/sys", tags = {"Controller标签"})
 // @ApiIgnore 表示忽略该类，不生成文档
 //@ApiIgnore
+@SwaggerDefinition(info = 
+@Info(title = "标题", version = "版本", contact = 
+@Contact(name = "qianye.zheng", email = "xx@qq.com", url = "主页")))
 @Controller
 @RequestMapping(UriConstant.API + "sys")
-public final class SwaggerController extends BaseController
+public class SwaggerController extends BaseController
 {
 	
 	@Resource
@@ -86,10 +92,15 @@ public final class SwaggerController extends BaseController
 			 )
 	@RequestMapping("loginV1")
 	@ResponseBody
-	public final ResultBean loginV1(final HttpServletRequest request, 
-			final HttpServletResponse response, @ApiParam(name = "user", value="用户信息" ,required = true, 
+	/*
+	 * @ApiParam(name = "user", value="用户信息" ,required = true, 
 			examples = @Example(value = @ExampleProperty(mediaType = "application/json", value = "{\"id\": \"string\",\"lastLoginIp\": \"string\","
-					+ "\"nickname\": \"222\", \"password\": \"3343454545\",\"username\": \"string\",\"valid\": true}"))) @RequestBody final SimpleUser user)
+					+ "\"nickname\": \"222\", \"password\": \"3343454545\",\"username\": \"string\",\"valid\": true}"))) @RequestBody final SimpleUser user
+	 */
+	 @ApiParam(name = "id", value="用户信息" ,required = true, 
+		examples = @Example(value = @ExampleProperty(mediaType = "application/json", value = "{'id':'1234'}")))
+	public final ResultBean loginV1(final HttpServletRequest request, 
+			final HttpServletResponse response, @RequestBody final SimpleUser user)
 	{
 		log.info("login =====> enter ...");
 		
@@ -162,9 +173,7 @@ public final class SwaggerController extends BaseController
 	@RequestMapping(value = "loginV20", method = RequestMethod.GET)
 	@ResponseBody
 	public final ResultBean loginV20(final HttpServletRequest request, 
-			final HttpServletResponse response, @ApiParam(name = "user", value="用户信息" ,required = true, 
-			examples = @Example(value = @ExampleProperty(mediaType = "application/x-www-form-urlencoded", value = "{\"id\": \"string\",\"lastLoginIp\": \"string\","
-					+ "\"nickname\": \"222\", \"password\": \"3343454545\",\"username\": \"string\",\"valid\": true}"))) final SimpleUser user)
+			final HttpServletResponse response,  final SimpleUser user)
 	{
 		log.info("login =====> enter ..." + request.getHeader("Content-Type"));
 		

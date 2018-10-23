@@ -1,5 +1,8 @@
 package com.hua.swagger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -8,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -51,9 +55,23 @@ public class SwaggerConfig implements WebMvcConfigurer
       */
     @Bean
     public Docket customDocket() {
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo());
+        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).securitySchemes(securitySchemas());
     }
 
+    /**
+     * 
+     * @description 
+     * @return
+     * @author qianye.zheng
+     */
+    private List<ApiKey> securitySchemas()
+    {
+    	List<ApiKey> apiKeys = new ArrayList<ApiKey>();
+    	apiKeys.add(new ApiKey("Authorization", "Authorization", "header"));
+    	
+    	return apiKeys;
+    }
+    
     /**
      * 
      * @description 
