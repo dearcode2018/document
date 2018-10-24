@@ -399,6 +399,49 @@ public class SwaggerController extends BaseController
 	  * @param request
 	  * @param response
 	  * @param user
+	  * @return
+	  * @author qianye.zheng
+	  */
+	 @ApiOperation(value = "响应-表格样式", 
+			 response = SimpleUser.class,
+			 notes = "<table>"
+			 /* 表头 */
+	 		+ "<tr>"
+	 		+ "<th>&nbsp&nbsp名称&nbsp&nbsp</th>"
+	 		+ "<th>&nbsp&nbsp类型&nbsp&nbsp</th>"
+	 		+ "<th>&nbsp&nbsp必填&nbsp&nbsp</th>"
+	 		+ "<th>&nbsp&nbsp描述&nbsp&nbsp</th>"
+	 		+ "<th>&nbsp&nbsp备注&nbsp&nbsp</th>"
+	 		+ "</tr>"
+	 		/* 行 */
+	 		+ "<tr><td>name</td><td>string</td><td>N</td><td>名称</td><td>无</td></tr>"
+	 		+ "<tr><td>xx</td><td>string</td><td>N</td><td>无</td><td>无</td></tr>"
+	 		+ "<tr><td>aflkwjlkjlajlkfjalksjfsdfdsf</td><td>string</td><td>N</td><td>无</td><td>无备注啊放假啊来开发你好好啊流卡分阿龙卷风</td></tr>"	 		
+	 		+ "</table>",
+	         tags = {"GET方法"})
+	 @ApiParam(name = "vo", example = "id=123&username=zhangsan")
+	@RequestMapping(value = "loginV37/{code}", method = RequestMethod.GET)
+	@ResponseBody
+	public final ResultBean loginV37(final HttpServletRequest request, 
+			final HttpServletResponse response,  
+			final SimpleUser vo
+			)
+	{
+		 ResultBean resultBean = new ResultBean();
+		 SimpleUser user = new SimpleUser();
+		 user.setNickname("zhangsan");
+		 user.setPassword("xxxx");
+		 resultBean.setData(user);
+		 
+		return resultBean;
+	}
+	 
+	 /**
+	  * 
+	  * @description 
+	  * @param request
+	  * @param response
+	  * @param user
 	  * @param pager
 	  * @param userLog
 	  * @return
