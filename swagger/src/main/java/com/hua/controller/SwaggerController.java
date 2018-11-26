@@ -103,8 +103,8 @@ public class SwaggerController extends BaseController
 			examples = @Example(value = @ExampleProperty(mediaType = "application/json", value = "{\"id\": \"string\",\"lastLoginIp\": \"string\","
 					+ "\"nickname\": \"222\", \"password\": \"3343454545\",\"username\": \"string\",\"valid\": true}"))) @RequestBody final SimpleUser user
 	 */
-	 @ApiParam(name = "id", value="用户信息" ,required = true, 
-		examples = @Example(value = @ExampleProperty(mediaType = "application/json", value = "{'id':'1234'}")))
+	 /*@ApiParam(name = "id", value="用户信息" ,required = true, 
+		examples = @Example(value = @ExampleProperty(mediaType = "application/json", value = "{'id':'1234'}")))*/
 	public final ResultBean loginV1(final HttpServletRequest request, 
 			final HttpServletResponse response, @RequestBody final SimpleUser user)
 	{
@@ -419,7 +419,7 @@ public class SwaggerController extends BaseController
 	 		+ "<tr><td>aflkwjlkjlajlkfjalksjfsdfdsf</td><td>string</td><td>N</td><td>无</td><td>无备注啊放假啊来开发你好好啊流卡分阿龙卷风</td></tr>"	 		
 	 		+ "</table>",
 	         tags = {"GET方法"})
-	 @ApiParam(name = "vo", example = "id=123&username=zhangsan")
+	//@ApiParam(name = "vo", example = "id=123&username=zhangsan")
 	@RequestMapping(value = "loginV37/{code}", method = RequestMethod.GET)
 	@ResponseBody
 	public final ResultBean loginV37(final HttpServletRequest request, 
